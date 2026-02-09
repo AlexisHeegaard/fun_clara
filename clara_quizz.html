@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate [Her Name] Personality Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B9D;
+            --secondary: #FFC75F;
+            --accent: #C9EEFF;
+            --dark: #2D3047;
+            --light: #FFF8F0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: var(--light);
+            border-radius: 30px;
+            padding: 50px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .decorative-blob {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            opacity: 0.15;
+            filter: blur(50px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            background: var(--primary);
+            top: -50px;
+            right: -50px;
+        }
+
+        .blob-2 {
+            background: var(--secondary);
+            bottom: -50px;
+            left: -50px;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, 20px) scale(1.1); }
+        }
+
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .start-btn, .next-btn, .restart-btn {
+            background: linear-gradient(135deg, var(--primary), #e74c88);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 107, 157, 0.3);
+            display: block;
+            margin: 30px auto 0;
+        }
+
+        .start-btn:hover, .next-btn:hover, .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        .start-btn:active, .next-btn:active, .restart-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .question-container {
+            margin: 30px 0;
+        }
+
+        .question {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: white;
+            border: 3px solid transparent;
+            padding: 20px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 157, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .option:hover::before {
+            left: 100%;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, var(--primary), #e74c88);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .result {
+            text-align: center;
+        }
+
+        .result-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .result-description {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+
+        .emoji {
+            font-size: 4rem;
+            margin: 20px 0;
+            display: block;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 25px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .question {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="decorative-blob blob-1"></div>
+        <div class="decorative-blob blob-2"></div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen active">
+            <h1>🎯 The Ultimate [Her Name] Personality Quiz</h1>
+            <p class="subtitle">Think you know her? Let's find out what type of [Her Name] you really are!</p>
+            <button class="start-btn" onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <div id="question-container" class="question-container">
+                <!-- Questions will be inserted here -->
+            </div>
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="screen">
+            <div class="result">
+                <span class="emoji" id="result-emoji">🎉</span>
+                <h2 class="result-title" id="result-title">Your Result</h2>
+                <p class="result-description" id="result-description">Description goes here</p>
+                <button class="restart-btn" onclick="restartQuiz()">Take Quiz Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CUSTOMIZE THESE QUESTIONS AND ANSWERS
+        const quizData = [
+            {
+                question: "It's Friday night. What's she doing?",
+                options: [
+                    { text: "Already asleep by 9pm (grandma mode activated)", points: { A: 3 } },
+                    { text: "Binge-watching shows and ignoring bedtime like a rebellious teen", points: { B: 3 } },
+                    { text: "Out causing chaos and being the life of the party", points: { C: 3 } },
+                    { text: "Making elaborate plans she'll definitely cancel last minute", points: { D: 3 } }
+                ]
+            },
+            {
+                question: "How does she handle being hangry?",
+                options: [
+                    { text: "Becomes a completely different person (hide the children)", points: { A: 3 } },
+                    { text: "Denies being hungry while stealing food from your plate", points: { B: 3 } },
+                    { text: "Full meltdown mode - tears, drama, the works", points: { C: 3 } },
+                    { text: "Passive aggressively makes comments until someone feeds her", points: { D: 3 } }
+                ]
+            },
+            {
+                question: "Her approach to making decisions:",
+                options: [
+                    { text: "Takes 3 business days to choose a restaurant", points: { A: 3 } },
+                    { text: "Makes impulsive choices and deals with consequences later", points: { B: 3 } },
+                    { text: "Asks everyone's opinion then does whatever she wanted anyway", points: { C: 3 } },
+                    { text: "Overthinks everything into paralysis", points: { D: 3 } }
+                ]
+            },
+            {
+                question: "What's her superpower?",
+                options: [
+                    { text: "Finding things to worry about that don't exist yet", points: { A: 3 } },
+                    { text: "Making everything into a dramatic story", points: { B: 3 } },
+                    { text: "Losing important items in her own bag/room", points: { C: 3 } },
+                    { text: "Perfectly roasting people while maintaining innocence", points: { D: 3 } }
+                ]
+            },
+            {
+                question: "In an argument, she:",
+                options: [
+                    { text: "Brings up things from 3 years ago (she has receipts)", points: { A: 3 } },
+                    { text: "Gets so flustered she forgets all her good points", points: { B: 3 } },
+                    { text: "Uses logic and facts like a lawyer (terrifying)", points: { C: 3 } },
+                    { text: "Wins with one devastating perfectly-timed comeback", points: { D: 3 } }
+                ]
+            }
+        ];
+
+        // CUSTOMIZE THESE RESULTS
+        const results = {
+            A: {
+                emoji: "👑",
+                title: "The Chaos Queen",
+                description: "You're a beautiful disaster and we love you for it. Your ability to create drama out of thin air is truly impressive. Keep being your wonderfully unpredictable self! (But maybe get a planner?)"
+            },
+            B: {
+                emoji: "🎭",
+                title: "The Drama Llama",
+                description: "Everything is a main character moment with you, and honestly? It's entertaining. Your reactions are legendary and your storytelling could win awards. Never change, you theatrical genius."
+            },
+            C: {
+                emoji: "🤪",
+                title: "The Adorable Disaster",
+                description: "You're like a cute tornado - destructive but impossible to be mad at. Your organized chaos has its own logic that only you understand. Chaos is your love language."
+            },
+            D: {
+                emoji: "😈",
+                title: "The Sneaky Genius",
+                description: "You're too smart for your own good and low-key scary in the best way. You know exactly what you're doing even when you pretend you don't. Respect the game."
+            }
+        };
+
+        let currentQuestion = 0;
+        let scores = { A: 0, B: 0, C: 0, D: 0 };
+        let selectedAnswer = null;
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const questionData = quizData[currentQuestion];
+            const container = document.getElementById('question-container');
+            
+            let html = `
+                <div class="question">${questionData.question}</div>
+                <div class="options">
+            `;
+            
+            questionData.options.forEach((option, index) => {
+                html += `
+                    <div class="option" onclick="selectOption(${index})">
+                        ${option.text}
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+            
+            updateProgress();
+            selectedAnswer = null;
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function selectOption(index) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+            
+            selectedAnswer = index;
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            if (selectedAnswer === null) return;
+            
+            const questionData = quizData[currentQuestion];
+            const points = questionData.options[selectedAnswer].points;
+            
+            for (let key in points) {
+                scores[key] += points[key];
+            }
+            
+            currentQuestion++;
+            
+            if (currentQuestion < quizData.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            
+            let maxScore = 0;
+            let resultType = 'A';
+            
+            for (let key in scores) {
+                if (scores[key] > maxScore) {
+                    maxScore = scores[key];
+                    resultType = key;
+                }
+            }
+            
+            const result = results[resultType];
+            document.getElementById('result-emoji').textContent = result.emoji;
+            document.getElementById('result-title').textContent = result.title;
+            document.getElementById('result-description').textContent = result.description;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            scores = { A: 0, B: 0, C: 0, D: 0 };
+            selectedAnswer = null;
+            
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('start-screen').classList.add('active');
+        }
+    </script>
+</body>
+</html>
